@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}포스트 상세 내용입니다.
+{% endblock %}
+{% block content %}
+<div class="container my-3">
+    <section id="detail">
+        {% if post.category %}
+        <h6 class="text-end">[{{ post.category }}]</h6>
+        {% endif %}
+        <h3>{{ post.title }}</h3>
+        <h5 style="white-space: pre-line; line-height: 1.5">
+            {{ post.content }}
+        </h5>
+        <p>글쓴이: {{ post.author }} (작성일: {{ post.pub_date }})</p>
+        <!-- 이미지 파일이 있으면 보이기 -->
+        {% if post.photo %}
+        <img src="{{ post.photo.url }}">
+        {% endif %}
+        <!-- 파일이 있으면 보이기 -->
+        {% if post.file %}
+        <p>
+            <!-- 다운로드 자동완성 -->
+            <a href="{{ post.file.url }}" class="btn btn-outline-dark">
+                {% if post.get_file_ext == 'csv' %}
+                    <i class="fa-solid fa-file-csv"></i>
+                {% elif post.get_file_ext == 'excel' or post.get_file.ext == 'xls' %}
+                    <i class="fa-solid fa-file-excel"></i>
+                {% else %}
+                    <i class="fa-solid fa-file"></i>
+                {% endif %}
+                {{ post.get_file_name }}</a>
+        </p>
+        {% endif %}
+
+    </section>
+    <aside id="category">
+        <h4>분류(Category)</h4>
+        <div>
+            <ul>
+                {% for category in categories %}
+                <li>{{ category.name }}({{ category.post_set.count }})</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </aside>
+</div>
+{% endblock %}

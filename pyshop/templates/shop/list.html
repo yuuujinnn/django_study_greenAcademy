@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section id="list">
+    <div class="row">
+        <!--2: 10 - 분류: 상품-->
+        <div class="col-2">
+            <div class="list-group">
+                <a href="{% url 'shop:product_all' %}" class="list-group-item
+                        {% if not current_category %} active {% endif %}">All</a>
+
+                {% for category in categories %}
+                    <a href="{{ category.get_absolute_url }}"
+                        class="list-group-item {% if current_category.slug == category.slug %} active {% endif %}">
+                        {{ category.name }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        <!--제품-->
+        <div class="col-10">
+            <div class="alert alert-info">
+                {% if current_category %}
+                    {{ current_category.name }}
+                {% else %}
+                    All Products
+                {% endif %}
+            </div>
+            <div class="row">
+
+            {% for product in products %}
+            <div class="col-4">
+
+                <div class="card">
+                    <img class="card-img-top" src="{{ product.image.url }}" alt="Product Image">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">
+                            {{ product.description }}
+                            <span class="badge bg-dark">
+                                {{ product.price }}
+                            </span>
+                        </p>
+                        <a href="{{ product.get_absolute_url }}" class="btn btn-success">View Detail</a>
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

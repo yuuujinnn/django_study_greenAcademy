@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section id="detail">
+    <h1>장바구니 상세 페이지</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Remove</th>
+                <th>Unit price</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in cart %}
+                <!--{% with product=item.product %}-->
+            <tr>
+                <td>
+                    <a href="{{ item.product.get_absolute_url }}">
+                        <img src="{{ item.product.image.url }}" class="img-thumbnail">
+                    </a>
+                </td>
+                <td>{{ item.product.name }}</td>
+                <td>
+                    <form action="{% url 'cart:product_add' product.id%}" method="post">
+                        {% csrf_token %}
+                        {{ item.quantity_form.quantity }}
+                        {{ item.quantity_form.is_update }}
+                        <input type="submit" value="Update" class="btn btn-primary mt-1">
+                    </form>
+                </td>
+                <td><a href="{% url 'cart:product_remove' product.id %}">Remove</a></td>
+                <td>{{ item.price }}</td>
+                <td>{{ item.total_price }}</td>
+            </tr>
+                <!--{% endwith %}-->
+        {% endfor %}
+        <tr>
+            <td>Total</td>
+            <td colspan="4"></td>
+            <td>{{ cart.get_product_total }}</td>
+        </tr>
+        </tbody>
+    </table>
+    <p class="text-end">
+        <a href="{% url 'shop:product_all' %}" class="btn btn-secondary">Continue Shopping</a>
+    </p>
+</section>
+
+{% endblock %}

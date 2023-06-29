@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}포스트 목록입니다.
+{% endblock %}
+{% block content %}
+<div class="container">
+    <section id="post_list">
+    <h2>Blog 홈</h2>
+    {% if post_list %}
+        <!-- 포스트 가져옴 -->
+        {% for post in post_list %}
+            <hr>
+            {% if post.category %}
+                <h6 class="text-end">[{{ post.category }}]</h6>
+            {% endif %}
+            <h3 class="my-3">
+                <a href="{% url 'blog:detail' post.id %}">
+                    {{ post.title }}
+                </a>
+            </h3>
+            <h5 style="white-space: pre-line; line-height: 1.5">
+                {{ post.content }}
+            </h5>
+            <p>글쓴이: {{ post.author }} (작성일: {{ post.pub_date }}</p>
+            {% if post.photo %}
+                <img src="{{ post.photo.url }}">
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <p>포스트가 없습니다.</p>
+    {% endif %}
+    </section>
+    <aside id="category">
+        <h4>분류(Category)</h4>
+        <div>
+            <ul>
+                {% for category in categories %}
+                    {% if current_category.slug == category.slug %}
+                <!-- category.post_set.count : 포스트의 총 개수 -->
+                <li style="background: #ff0">
+                    <a href="{{ category.get_absolute_url }}">
+                        {{ category.name }}({{ category.post_set.count }})
+                    </a>
+                </li>
+                {% else %}
+                <li>
+                    <a href="{{ category.get_absolute_url }}">
+                        {{ category.name }}({{ category.post_set.count }})
+                    </a>
+                </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </aside>
+</div>
+{% endblock %}

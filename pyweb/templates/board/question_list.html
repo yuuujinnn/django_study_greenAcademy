@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load board_filter %}
+{% block content %}
+<div class="container my-3">
+    <section id="question_list">
+        <table class="table">
+            <thead>
+                <tr class="table-dark">
+                    <th>번호</th><th>제목</th><th>작성일</th><th>작성자</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if question_list %}
+                    {% for question in question_list %}
+                    <tr>
+                        <!--<td>{{ forloop.counter }}</td>   &lt;!&ndash; 1부터 번호 시작&ndash;&gt;-->
+                        <!-- 템플릿 태그-->
+                        <!-- 1페이지 13~4, 2페이지 3~1
+                             13 - 1(시작인덱스1, 11, 21) - (0~9 현재 인덱스) + 1 = 13-->
+
+
+                        <td>{{ question_list.paginator.count|sub:question_list.start_index|sub:forloop.counter0|add:1 }}</td>
+                        <td>
+                            <a href="{% url 'board:detail' question.id %}">{{ question.subject }}</a>
+                        </td>
+                        <td>{{ question.create_date }}</td>
+                        <td>{{ question.author }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td>질문이 없습니다.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+        <!--페이지 처리 영역-->
+        <ul class="pagination justify-content-center">
+            <!--이전 페이지-->
+            {% if question_list.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ question_list.previous_page_number }}">
+                        &laquo;
+                    </a>
+                </li>
+            {% else %}
+                <!--이전 페이지가 없어도 표시됨 -->
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">&laquo;</a>
+                </li>
+            {% endif %}
+            <!--현재 페이지-->
+            {% for page_number in question_list.paginator.page_range %}
+            <!--현재 페이지와 리스트의 페이지가 일치하면 활성화함-->
+                {% if page_number == question_list.number %}
+                    <li class="page-item active">
+                        <a class="page-link" href="?page={{ page_number }}">
+                            {{ page_number }}
+                        </a>
+                    </li>
+
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_number }}">
+                            {{ page_number }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            <!--다음 페이지-->
+            {% if question_list.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ question_list.next_page_number }}">
+                        &raquo;
+                    </a>
+                </li>
+            {% else %}
+                <!--이전 페이지가 없어도 표시됨 -->
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">&raquo;</a>
+                </li>
+            {% endif %}
+        </ul>
+        <!--질문 등록 메뉴-->
+        <a href="{% url 'board:question_create' %}"
+            class="btn btn-primary">질문 등록</a>
+    </section>
+</div>
+{% endblock %}
